@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pricing-service
+  labels:
+    app: pricing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pricing-service
+  template:
+    metadata:
+      labels:
+        app: pricing-service
+    spec:
+      containers:
+        - name: pricing-service
+          image: pjaiswal10/pricing-service:1.0
+          ports:
+            - containerPort: 8200
+          env:
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb
+                  key: database-name
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: database-user
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: database-password
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pricing-service
+  labels:
+    app: pricing-service
+    spring-boot: "true"
+spec:
+  ports:
+    - port: 8200
+      protocol: TCP
+  selector:
+    app: pricing-service
+  type: NodePort

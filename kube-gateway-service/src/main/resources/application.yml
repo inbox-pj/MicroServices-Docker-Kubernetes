@@ -1,0 +1,20 @@
+server:
+  port: ${API_GATEWAY_PORT:8100}
+  
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.usl.microservices: DEBUG 
+
+zuul:
+  prefix: /api
+  ignored-services: "*"
+  routes:
+    pricing-service: /pricing/**
+    catalog-service: /catalog/**
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000

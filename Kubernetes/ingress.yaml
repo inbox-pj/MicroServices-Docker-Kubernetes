@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-gateway
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  backend:
+    serviceName: gateway-service
+    servicePort: 8100
+  rules:
+  - host: host.clear2pay.com
+    http:
+      paths:
+      - path: /pricing
+        backend:
+          serviceName: pricing-service
+          servicePort: 8200
+      - path: /catalog
+        backend:
+          serviceName: catalog-service
+          servicePort: 8300
